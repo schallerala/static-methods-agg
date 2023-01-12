@@ -1,0 +1,23 @@
+SOURCE_PAGE_FOLDER := ~/myproject/src/test/java/org/example/mypackage
+TARGET_SUGAR_CLASS := org.example.GeneratedSugarClass
+TARGET_ROOT_FOLDER := ~/myproject/src/test/java
+
+TARGET_SUGAR_CLASS_PATH := ~/myproject/src/test/java/org/example/GeneratedSugarClass.java
+
+SOURCE_PAGE_JAVA := $(wildcard $(SOURCE_PAGE_FOLDER)/*.java)
+
+
+$(TARGET_SUGAR_CLASS_PATH): $(SOURCE_PAGE_JAVA) target/static-methods-agg*-jar-with-dependencies.jar
+	java -jar target/static-methods-agg*-jar-with-dependencies.jar $(SOURCE_PAGE_FOLDER) $(TARGET_SUGAR_CLASS) $(TARGET_ROOT_FOLDER)
+
+target/static-methods-agg*-jar-with-dependencies.jar: pom.xml $(find shell src/main -type f)
+	make build
+
+build:
+	mvn clean package
+
+clean:
+	mvn clean
+	rm -f $(TARGET_SUGAR_CLASS_PATH)
+
+.PHONY: build clean $(TARGET_SUGAR_CLASS_PATH)
